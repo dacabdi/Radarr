@@ -294,7 +294,7 @@ namespace NzbDrone.Core.Movies
         {
             using (var conn = _database.OpenConnection())
             {
-                var strSql = "SELECT Id AS [Key], Path AS [Value] FROM Movies";
+                var strSql = "SELECT \"Id\" AS \"Key\", \"Path\" AS \"Value\" FROM \"Movies\"";
                 return conn.Query<KeyValuePair<int, string>>(strSql).ToDictionary(x => x.Key, x => x.Value);
             }
         }
@@ -303,7 +303,7 @@ namespace NzbDrone.Core.Movies
         {
             using (var conn = _database.OpenConnection())
             {
-                var strSql = "SELECT Id AS [Key], TitleSlug AS [Value] FROM Movies";
+                var strSql = "SELECT \"Id\" AS \"Key\", \"TitleSlug\" AS \"Value\" FROM \"Movies\"";
                 return conn.Query<KeyValuePair<int, string>>(strSql).ToDictionary(x => x.Key, x => x.Value);
             }
         }
@@ -312,7 +312,7 @@ namespace NzbDrone.Core.Movies
         {
             using (var conn = _database.OpenConnection())
             {
-                return conn.Query<int>("SELECT TmdbId FROM Movies").ToList();
+                return conn.Query<int>("SELECT \"TmdbId\" FROM \"Movies\"").ToList();
             }
         }
 
@@ -320,7 +320,7 @@ namespace NzbDrone.Core.Movies
         {
             using (var conn = _database.OpenConnection())
             {
-                var strSql = "SELECT Id AS [Key], Tags AS [Value] FROM Movies";
+                var strSql = "SELECT \"Id\" AS \"Key\", \"Tags\" AS \"Value\" FROM \"Movies\"";
                 return conn.Query<KeyValuePair<int, List<int>>>(strSql).ToDictionary(x => x.Key, x => x.Value);
             }
         }
@@ -336,18 +336,18 @@ namespace NzbDrone.Core.Movies
 
             using (var conn = _database.OpenConnection())
             {
-                recommendations = conn.Query<int>(@"SELECT DISTINCT Rec FROM (
-                                                    SELECT DISTINCT Rec FROM
+                recommendations = conn.Query<int>(@"SELECT DISTINCT ""Rec"" FROM (
+                                                    SELECT DISTINCT ""Rec"" FROM
                                                     (
-                                                    SELECT DISTINCT CAST(j.value AS INT) AS Rec FROM Movies CROSS JOIN json_each(Movies.Recommendations) AS j
-                                                    WHERE Rec NOT IN (SELECT TmdbId FROM Movies union SELECT TmdbId from ImportExclusions) LIMIT 10
+                                                    SELECT DISTINCT CAST(""j"".""value"" AS INT) AS ""Rec"" FROM ""Movies"" CROSS JOIN json_each(""Movies"".""Recommendations"") AS ""j""
+                                                    WHERE ""Rec"" NOT IN (SELECT ""TmdbId"" FROM ""Movies"" union SELECT ""TmdbId"" from ""ImportExclusions"") LIMIT 10
                                                     )
                                                     UNION
-                                                    SELECT Rec FROM
+                                                    SELECT ""Rec"" FROM
                                                     (
-                                                    SELECT CAST(j.value AS INT) AS Rec FROM Movies CROSS JOIN json_each(Movies.Recommendations) AS j
-                                                    WHERE Rec NOT IN (SELECT TmdbId FROM Movies union SELECT TmdbId from ImportExclusions)
-                                                    GROUP BY Rec ORDER BY count(*) DESC LIMIT 120
+                                                    SELECT CAST(""j"".""value"" AS INT) AS ""Rec"" FROM ""Movies"" CROSS JOIN json_each(""Movies"".""Recommendations"") AS ""j""
+                                                    WHERE ""Rec"" NOT IN (SELECT ""TmdbId"" FROM ""Movies"" union SELECT ""TmdbId"" from ""ImportExclusions"")
+                                                    GROUP BY ""Rec"" ORDER BY count(*) DESC LIMIT 120
                                                     )
                                                     )
                                                     LIMIT 100;").ToList();

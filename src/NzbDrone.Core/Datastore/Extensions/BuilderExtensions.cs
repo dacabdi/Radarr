@@ -20,7 +20,7 @@ namespace NzbDrone.Core.Datastore
 
         public static SqlBuilder Select(this SqlBuilder builder, params Type[] types)
         {
-            return builder.Select(types.Select(x => TableMapping.Mapper.TableNameMapping(x) + ".*").Join(", "));
+            return builder.Select(types.Select(x => $"\"{TableMapping.Mapper.TableNameMapping(x)}\".*").Join(", "));
         }
 
         public static SqlBuilder SelectDistinct(this SqlBuilder builder, params Type[] types)
@@ -60,7 +60,7 @@ namespace NzbDrone.Core.Datastore
 
             var rightTable = TableMapping.Mapper.TableNameMapping(typeof(TRight));
 
-            return builder.Join($"{rightTable} ON {wb.ToString()}");
+            return builder.Join($"\"{rightTable}\" ON {wb.ToString()}");
         }
 
         public static SqlBuilder LeftJoin<TLeft, TRight>(this SqlBuilder builder, Expression<Func<TLeft, TRight, bool>> filter)
@@ -69,7 +69,7 @@ namespace NzbDrone.Core.Datastore
 
             var rightTable = TableMapping.Mapper.TableNameMapping(typeof(TRight));
 
-            return builder.LeftJoin($"{rightTable} ON {wb.ToString()}");
+            return builder.LeftJoin($"\"{rightTable}\" ON {wb.ToString()}");
         }
 
         public static SqlBuilder GroupBy<TModel>(this SqlBuilder builder, Expression<Func<TModel, object>> property)
